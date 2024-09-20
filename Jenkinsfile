@@ -1,22 +1,20 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'node:18-alpine' }
+    }
     stages {
-
-        
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-
         stage('Test') {
             steps {
-                sh 'sudo apt install npm'
+                sh 'npm install'
                 sh 'npm test'
             }
         }
-
 
         stage('Build') {
             steps {
@@ -24,15 +22,14 @@ pipeline {
             }
         }
 
-
         stage('Build Image') {
-           steps{
-            sh 'docker build -t jenkins-test:latest .'
-           }
+            steps {
+                sh 'docker build -t jenkins-test:latest .'
+            }
         }
 
         stage('Docker Push') {
-              steps {
+            steps {
                 withCredentials([usernamePassword(credentialsId: 'docker_cred', passwordVariable: 'DOCKER_REGISTRY_PASSWD', usernameVariable: 'DOCKER_REGISTRY_USER')]) {
                     sh "docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWD"
                     sh 'docker tag jenkins-test:1.0 sakib75/jenkins-test:1.0'
@@ -41,6 +38,5 @@ pipeline {
                 }
             }
         }
-
     }
 }
