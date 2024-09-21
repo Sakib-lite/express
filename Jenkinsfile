@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = 'sakib75/jenkins-test:1.0'
+        DOCKER_IMAGE = 'sakib75/jenkins-test:2.0'
     }
     stages {
         stage('Clean Workspace') {
@@ -27,7 +27,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t jenkins-test:1.0 .'
+                    sh 'docker build -t jenkins-test:2.0 .'
                 }
             }
         }
@@ -35,7 +35,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-cred', passwordVariable: 'DOCKER_REGISTRY_PASSWD', usernameVariable: 'DOCKER_REGISTRY_USER')]) {
                     sh "docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWD"
-                    sh "docker tag jenkins-test:1.0 ${DOCKER_IMAGE}"
+                    sh "docker tag jenkins-test:2.0 ${DOCKER_IMAGE}"
                     sh "docker push ${DOCKER_IMAGE}"
                     sh 'docker logout'
                 }
