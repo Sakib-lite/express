@@ -10,19 +10,19 @@ pipeline {
         }
 
 
-        stage('Test') {
+         stage('Test') {
             steps {
-                sh 'sudo apt install npm'
+                sh 'npm install'
                 sh 'npm test'
             }
         }
-
 
         stage('Build') {
             steps {
                 sh 'npm run build'
             }
         }
+
 
         stage('Build Image') {
             steps {
