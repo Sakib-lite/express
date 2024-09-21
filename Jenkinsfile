@@ -4,6 +4,11 @@ pipeline {
         DOCKER_IMAGE = 'sakib75/jenkins-test:1.0'
     }
     stages {
+        stage('Clean Workspace') {
+            steps {
+                sh 'rm -rf node_modules package-lock.json'
+            }
+        }
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
