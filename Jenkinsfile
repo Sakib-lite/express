@@ -4,6 +4,21 @@ pipeline {
         DOCKER_IMAGE = 'sakib75/jenkins-test:1.0'
     }
     stages {
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                sh 'npm test'
+            }
+        }
+        stage('Build Project') {
+            steps {
+                sh 'npm run build'
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
