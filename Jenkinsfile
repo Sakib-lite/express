@@ -1,41 +1,22 @@
 pipeline {
-    agent {
-        docker { image 'node:18-alpine' }
+    agent any
+    environment {
+        DOCKER_IMAGE = 'sakib75/jenkins-test:1.0'
     }
     stages {
-        stage('Checkout') {
+        stage('Build Docker Image') {
             steps {
-                checkout scm
+                script {
+                    sh 'docker build -t jenkins-test:1.0 .'
+                }
             }
         }
-
-
-         stage('Test') {
-            steps {
-                sh 'npm install'
-                sh 'npm test'
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh 'npm run build'
-            }
-        }
-
-
-        stage('Build Image') {
-            steps {
-                sh 'docker build -t jenkins-test:latest .'
-            }
-        }
-
-        stage('Docker Push') {
+        stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker_cred', passwordVariable: 'DOCKER_REGISTRY_PASSWD', usernameVariable: 'DOCKER_REGISTRY_USER')]) {
                     sh "docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWD"
-                    sh 'docker tag jenkins-test:1.0 sakib75/jenkins-test:1.0'
-                    sh 'docker push sakib75/jenkins-test:1.0'
+                    sh "docker tag jenkins-test:1.0 ${DOCKER_IMAGE}"
+                    sh "docker push ${DOCKER_IMAGE}"
                     sh 'docker logout'
                 }
             }
