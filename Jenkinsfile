@@ -13,7 +13,7 @@ pipeline {
         }
         stage('Push to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker_cred', passwordVariable: 'DOCKER_REGISTRY_PASSWD', usernameVariable: 'DOCKER_REGISTRY_USER')]) {
+                withCredentials([usernamePassword(credentialsId: 'docker-cred', passwordVariable: 'DOCKER_REGISTRY_PASSWD', usernameVariable: 'DOCKER_REGISTRY_USER')]) {
                     sh "docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWD"
                     sh "docker tag jenkins-test:1.0 ${DOCKER_IMAGE}"
                     sh "docker push ${DOCKER_IMAGE}"
